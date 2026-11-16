@@ -1,0 +1,65 @@
+---
+import '../styles/global.css';
+
+const { titulo, descripcion, fecha, temas, referencias, lecturaMin } = Astro.props;
+const formattedDate = new Date(fecha).toLocaleDateString('es-UY', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{titulo} | Theo Informath</title>
+    <meta name="description" content={descripcion} />
+  </head>
+  <body>
+    <!-- HEADER AZUL (Como tu carrusel) -->
+    <header style="background-color: var(--header-bg); color: var(--texto-claro); padding: 2rem 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h1 style="color: white;">{titulo}</h1>
+        <!-- Los 3 círculos de temas -->
+        <div style="display: flex; gap: 0.5rem;">
+          {temas.map(tema => (
+            <div style="width: 1.5rem; height: 1.5rem; border-radius: 50%; background-color: var(--body-bg); border: 2px solid var(--texto-claro);" title={tema}></div>
+          ))}
+        </div>
+      </div>
+      <p class="complemento" style="color: #E0E0E0;">{formattedDate} · ⏱️ {lecturaMin} min de lectura</p>
+    </header>
+
+    <!-- CUERPO (Fondo crema) -->
+    <main style="max-width: 800px; margin: 0 auto; padding: 3rem 1.5rem;">
+      <p class="complemento" style="font-style: italic; color: #555; border-left: 4px solid var(--acento); padding-left: 1rem; margin-bottom: 2rem;">
+        {descripcion}
+      </p>
+      
+      <!-- Aquí se inyecta el Markdown del artículo -->
+      <slot />
+    </main>
+
+    <!-- FOOTER AZUL/CELESTE (Como tu carrusel) -->
+    <footer style="background-color: var(--footer-bg); color: var(--texto-oscuro); padding: 2rem 1.5rem; margin-top: 3rem;">
+      <div style="max-width: 800px; margin: 0 auto;">
+        <h3 style="font-size: var(--fs-complemento); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+          <span style="color: var(--acento);">📚</span> Referencias Bibliográficas
+        </h3>
+        {referencias && referencias.length > 0 ? (
+          <ul style="list-style: none; padding: 0; margin: 0;">
+            {referencias.map(ref => (
+              <li class="complemento" style="margin-bottom: 0.5rem;">
+                → {ref.url ? <a href={ref.url} target="_blank" rel="noopener noreferrer">{ref.texto}</a> : ref.texto}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="complemento">Contenido original basado en experiencia propia.</p>
+        )}
+        <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center;" class="complemento">
+          <span><strong>THEO INFORMATH</strong> | ideas entre ceros, unos y π.</span>
+          <span>🔗 theo_informath</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

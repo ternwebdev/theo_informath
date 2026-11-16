@@ -1,20 +1,18 @@
-import { defineCollection } from 'astro:content';
-import { glob } from 'astro/loaders';
-import { z } from 'astro/zod';
+import { defineCollection, z } from 'astro:content';
 
 const blog = defineCollection({
-	// Load Markdown and MDX files in the `src/content/blog/` directory.
-	loader: glob({ base: './src/content/blog', pattern: '**/*.{md,mdx}' }),
-	// Type-check frontmatter using a schema
-	schema: ({ image }) =>
-		z.object({
-			title: z.string(),
-			description: z.string(),
-			// Transform string to Date object
-			pubDate: z.coerce.date(),
-			updatedDate: z.coerce.date().optional(),
-			heroImage: z.optional(image()),
-		}),
+  type: 'content',
+  schema: z.object({
+    titulo: z.string(),
+    descripcion: z.string(),
+    fecha: z.coerce.date(),
+    temas: z.array(z.enum(['Informática', 'Matemáticas', 'Redes'])), // Tus 3 círculos
+    referencias: z.array(z.object({ 
+      texto: z.string(), 
+      url: z.string().url().optional() 
+    })).optional(), // Para el footer
+    lecturaMin: z.number().int(), // Reemplaza el "1/10" del carrusel
+  }),
 });
 
 export const collections = { blog };
